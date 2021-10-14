@@ -293,7 +293,7 @@ void load_program() {
 	/* Read in the program. */
 	word = 0;
 	i = 0;
-	while( fscanf(fp, "%s\n", indata) != EOF ) {
+	while( fscanf(fp, "%[^\n]s\n", indata) != EOF ) {
 		printf("read in string: %s\n",indata);
 		temp = strtok (indata," ,.-");
 		bin = find_mips(temp);
@@ -302,6 +302,7 @@ void load_program() {
 		{
 			printf("read in string: %s\n",temp);
 			temp = strtok (NULL, " ,.-");
+			find_reg
 		}
 		for(int k=0; k < 10; k++) indata[k] = 0;	//reset the array
 		address = MEM_TEXT_BEGIN + i;
@@ -339,46 +340,47 @@ uint32_t find_mips(char* word)
 	for(int i=0; i < strlen(word); i++) word[i] = tolower(word[i]);
 	if(strcmp("add",word) == 0)
 	{
-		printf("adding\n");
-		inst = (inst << 26) | 0b100000;
-		inst = (inst << 5) | 0b100000;
+		inst |= (0b000000 << 26);
+		inst |= (0b100000 << 5);
+		inst = R_type(inst);
 	}
 	if(strcmp("addu",word) == 0)
 	{
-		inst = 0x21;
+		inst |= (0b000000 << 26);
+		inst |= (0b010101 << 5);
 	}
 	if(strcmp("addi",word) == 0)
 	{
-		inst = 0x20000000;
+		inst |= (0b001000 << 5);
 	}
 	if(strcmp("addiu",word) == 0)
 	{
-		inst = 0x24000000;
+		inst |= (0b001001 << 5);
 	}
 	if(strcmp("sub",word) == 0)
 	{
-		inst = (inst << 26) | 0b000000;
-		inst = (inst << 5) | 0b100010;
+		inst |= (0b000000 << 26);
+		inst |= (0b010110 << 5);
 	}
 	if(strcmp("subu",word) == 0)
 	{
-		inst = (inst << 26) | 0b000000;
-		inst = (inst << 5) | 0b100011;
+		inst |= (0b000000 << 26);
+		inst |= (0b010111 << 5);
 	}
 	if(strcmp("mult",word) == 0)
 	{
-		inst = (inst << 26) | 0b000000;
-		inst = (inst << 5) | 0b010010;
+		inst |= (0b000000 << 5);
+		inst |= (0b010010 << 5);
 	}
 	if(strcmp("multu",word) == 0)
 	{
-		inst = (inst << 26) | 0b000000;
-		inst = (inst << 5) | 0b010011;
+		inst |= (0b000000 << 26);
+		inst |= (0b010011 << 5);
 	}
 	if(strcmp("div",word) == 0)
 	{
-		inst = (inst << 26) | 0b000000;
-		inst = (inst << 5) | 0b011010;
+		inst |= (0b000000 << 26);
+		inst |= (0b011010 << 5);
 	}
 	if(strcmp("divu",word) == 0)
 	{
@@ -560,6 +562,27 @@ uint32_t find_reg(char* word)
 	return 0;
 }
 
+uint32_t R_type()
+{
+
+}
+uint32_t I_type()
+{
+
+}
+uint32_t J_type()
+{
+
+}
+uint32_t FR_type()
+{
+
+}
+uint32_t FI_type()
+{
+
+}
+
 /************************************************************/
 /* Initialize Memory                                                                                                    */ 
 /************************************************************/
@@ -591,79 +614,6 @@ void print_instruction(uint32_t addr){
 	/*IMPLEMENT THIS*/
 }
 
-/************************************************************/
-/* Bubble Sort Algorithm   */
-/************************************************************/
-//You have an array that contains 10 integers, A = {5,3,6,8,9,1,4,7,2,10}.
-//Use bubble sort algorithm to sort it in ascending order. In your MIPS program,
-//to sort them out.
-void swap(int *xp, int *yp)
-{
-    int temp = *xp;
-    *xp = *yp;
-    *yp = temp;
-}
-void bubble_sort(int A[], int n)
-{
-    //store these values into the data segment of the memory
-    uint32_t addr;
-    for (int y = 0; y < PROGRAM_SIZE; y++)
-    {
-        addr = MEM_TEXT_BEGIN + (y * 4);
-        addr = A[y];
-    }
-
-    for (int i = 0; i < n - 1; i++)
-    {
-        for (int j = 0; j < n - i - 1; j++)
-        {
-            if (A[j] > A[j + 1])
-            {
-                //print sorted values
-                swap(&A[j], &A[j + 1]);
-            }
-        }
-    }
-}
-void printArray(int A[], int size)
-{
-    int i;
-    printf("Bubble Sorted: \n");
-    for (i = 0; i < size; i++)
-    {
-        printf("%d ", A[i]);
-        printf("\n");
-    }
-}
-// end bubble sort algorithm
-
-/************************************************************/
-/* MIPS Fibonacci number of a given value   */
-/************************************************************/
-void fibonacci_number()
-{
-    int i;
-    int n = 10;
-
-    // initialize first and second terms
-    int t1 = 0, t2 = 1;
-
-    // initialize the next term (3rd term)
-    int nextTerm = t1 + t2;
-
-    // print the first two terms t1 and t2
-    printf("Fibonacci Series: %d, %d, ", t1, t2);
-
-    // print 3rd to nth terms
-    for (i = 3; i <= n; ++i) {
-        printf("%d, ", nextTerm);
-        t1 = t2;
-        t2 = nextTerm;
-        nextTerm = t1 + t2;
-    }
-
-}
-
 /***************************************************************/
 /* main                                                                                                                                   */
 /***************************************************************/
@@ -679,16 +629,6 @@ int main(int argc, char *argv[]) {
 
 	strcpy(prog_file, argv[1]);
 	initialize();
-
-	int A[] = {5, 3, 6, 8, 9, 1, 4, 7, 2, 10};
-    int n = sizeof(A) / sizeof(A[0]);
-    bubble_sort(A, n);
-    printArray(A, n);
-
-    printf("\n");
-    fibonacci_number();
-    printf("\n\n");
-
 	load_program();
 	help();
 	while (1){
