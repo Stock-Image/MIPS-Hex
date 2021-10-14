@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <assert.h>
+#include <ctype.h>
 
 #include "mu-mips.h"
 
@@ -276,7 +277,8 @@ void init_memory() {
 /**************************************************************/
 void load_program() {                   
 	FILE * fp;
-	int i, word;
+	char indata[10];
+	int i,j,word;
 	uint32_t address;
 
 	/* Open program file. */
@@ -287,13 +289,14 @@ void load_program() {
 	}
 
 	/* Read in the program. */
-
 	i = 0;
-	while( fscanf(fp, "%x\n", &word) != EOF ) {
-		address = MEM_TEXT_BEGIN + i;
-		mem_write_32(address, word);
-		printf("writing 0x%08x into address 0x%08x (%d)\n", word, address, address);
+	j = 0;
+	while( fscanf(fp, "%s\n", indata) != EOF ) {
+			address = MEM_TEXT_BEGIN + i;
+			mem_write_32(address, word);
+//		printf("writing 0x%08x into address 0x%08x (%d)\n", word, address, address);
 		i += 4;
+		for(int k=0; k < j; k++) indata[k] = 0;	//reset the array
 	}
 	PROGRAM_SIZE = i/4;
 	printf("Program loaded into memory.\n%d words written into memory.\n\n", PROGRAM_SIZE);
@@ -309,6 +312,8 @@ void handle_instruction()
 	/* execute one instruction at a time. Use/update CURRENT_STATE and and NEXT_STATE, as necessary.*/
 
 
+
+
 	/*
 	 * Read in mips values and send them to the proper functions to executed*/
 
@@ -317,7 +322,232 @@ void handle_instruction()
 
 /*
  *Reads in the mips functions*/
+uint32_t find_mips(char* word)
+{
+	uint32_t inst = 0;
+	for(int i=0; i < strlen(word); i++) word[i] = tolower(word[i]);
+	if(strcmp("add",word) == 0)
+	{
+		inst = (inst >> 26) & 0b000000;
+		inst = (inst << 5) & 0b100000;
+	}
+	if(strcmp("addu",word) == 0)
+	{
+		inst = (inst >> 26) & 0b000000;
+		inst = (inst << 5) & 0b100001;
+	}
+	if(strcmp("addi",word) == 0)
+	{
+		inst = (inst >> 26) & 0b001000;
+	}
+	if(strcmp("addiu",word) == 0)
+	{
+		inst = (inst >> 26) & 0b001001;
+	}
+	if(strcmp("sub",word) == 0)
+	{
+		inst = (inst >> 26) & 0b000000;
+		inst = (inst << 5) & 0b100010;
+	}
+	if(strcmp("subu",word) == 0)
+	{
+		inst = (inst >> 26) & 0b000000;
+		inst = (inst << 5) & 0b100011;
+	}
+	if(strcmp("mult",word) == 0)
+	{
+		inst = (inst >> 26) & 0b000000;
+		inst = (inst << 5) & 0b010010;
+	}
+	if(strcmp("multu",word) == 0)
+	{
+		inst = (inst >> 26) & 0b000000;
+		inst = (inst << 5) & 0b010011;
+	}
+	if(strcmp("div",word) == 0)
+	{
+		inst = (inst >> 26) & 0b000000;
+		inst = (inst << 5) & 0b011010;
+	}
+	if(strcmp("divu",word) == 0)
+	{
+		inst = (inst >> 26) & 0b000000;
+		inst = (inst << 5) & 0b011011;
+	}
+	if(strcmp("and",word) == 0)
+	{
+		inst = (inst >> 26) & 0b000000;
+		inst = (inst << 5) & 0b100100;
+	}
+	if(strcmp("andi",word) == 0)
+	{
+		inst = (inst >> 26) & 0b001100;
+	}
+	if(strcmp("or",word) == 0)
+	{
+		inst = (inst >> 26) & 0b000000;
+		inst = (inst << 5) & 0b100101;
+	}
+	if(strcmp("ori",word) == 0)
+	{
+		inst = (inst >> 26) & 0b001101;
+	}
+	if(strcmp("xor",word) == 0)
+	{
+		inst = (inst >> 26) & 0b000000;
+		inst = (inst << 5) & 0b100110;
+	}
+	if(strcmp("xori",word) == 0)
+	{
+		inst = (inst >> 26) & 0b001110;
+	}
+	if(strcmp("nor",word) == 0)
+	{
+		inst = (inst >> 26) & 0b000000;
+		inst = (inst << 5) & 0b100111;
+	}
+	if(strcmp("slt",word) == 0)
+	{
+		inst = (inst >> 26) & 0b000000;
+		inst =(inst << 5) & 0b101010;
+	}
+	if(strcmp("slti",word) == 0)
+	{
+		inst = (inst >> 26) & 0b001010;
+	}
+	if(strcmp("sll",word) == 0)
+	{
+		inst = (inst >> 26) & 0b000000;
+		inst = (inst << 5) & 0b000000;
+	}
+	if(strcmp("srl",word) == 0)
+	{
+		inst = (inst >> 26) & 0b000000;
+		inst = (inst << 5) & 0b000010;
+	}
+	if(strcmp("sra",word) == 0)
+	{
+		inst = (inst << 5) & 0b000011;
+	}
+	if(strcmp("lw",word) == 0)
+	{
+		inst = (inst >> 26) & 0b100011;
+	}
+	if(strcmp("lb",word) == 0)
+	{
+		inst = (inst >> 26) & 0b100000;
+	}
+	if(strcmp("lh",word) == 0)
+	{
+		inst = (inst >> 26) & 0b100001;
+	}
+	if(strcmp("lui",word) == 0)
+	{
+		inst = (inst >> 26) & 0b001111;
+	}
+	if(strcmp("sw",word) == 0)
+	{
+		inst = (inst >> 26) & 0b101011;
+	}
+	if(strcmp("sb",word) == 0)
+	{
+		inst = (inst >> 26) & 0b101000;
+	}
+	if(strcmp("sh",word) == 0)
+	{
+		inst = (inst >> 26) & 0b101001;
+	}
+	if(strcmp("mfhi",word) == 0)
+	{
+		inst = (inst >> 26) & 0b000000;
+		inst = (inst << 5) & 0b001010;
+	}
+	if(strcmp("mflo",word) == 0)
+	{
+		inst = (inst >> 26) & 0b000000;
+		inst = (inst << 5) & 0b001100;
+	}
+	if(strcmp("mthi",word) == 0)
+	{
+		inst = (inst >> 26) & 0b000000;
+		inst = (inst << 5) & 0b010001;
+	}
+	if(strcmp("mtlo",word) == 0)
+	{
+		inst = (inst >> 26) & 0b000000;
+		inst = (inst << 5) & 0b010011;
+	}
+	if(strcmp("beq",word) == 0)
+	{
+		inst = (inst >> 26) & 0b000100;
+	}
+	if(strcmp("bne",word) == 0)
+	{
+		inst = (inst >> 26) & 0b000101;
+	}
+	if(strcmp("blez",word) == 0)
+	{
+		inst = (inst >> 26) & 0b000110;
+	}
+	if(strcmp("bltz",word) == 0);
+	if(strcmp("bgez",word) == 0);
+	if(strcmp("bgtz",word) == 0)
+	{
+		inst = (inst >> 26) & 0b000111;
+	}
+	if(strcmp("j",word) == 0)
+	{
+		inst = (inst >> 26) & 0b10;
+	}
+	if(strcmp("jr",word) == 0)
+	{
+		inst = (inst >> 26) & 0b000000;
+		inst = (inst << 5) & 0b001000;
+	}
+	if(strcmp("jal",word) == 0)
+	{
+		inst = (inst >> 26) & 0b000011;
+	}
+	if(strcmp("jalr",word) == 0);
+	return inst;
+}
 
+uint32_t find_reg(char* word)
+{
+	if(strcmp("$zero",word)) return 0;
+	if(strcmp("$at",word)) return 1;
+	if(strcmp("$v0",word)) return 2;
+	if(strcmp("$v1",word)) return 3;
+	if(strcmp("$a0",word)) return 4;
+	if(strcmp("$a1",word)) return 5;
+	if(strcmp("$a2",word)) return 6;
+	if(strcmp("$a3",word)) return 7;
+	if(strcmp("$t0",word)) return 8;
+	if(strcmp("$t1",word)) return 9;
+	if(strcmp("$t2",word)) return 10;
+	if(strcmp("$t3",word)) return 11;
+	if(strcmp("$t4",word)) return 12;
+	if(strcmp("$t5",word)) return 13;
+	if(strcmp("$t6",word)) return 14;
+	if(strcmp("$t7",word)) return 15;
+	if(strcmp("$s0",word)) return 16;
+	if(strcmp("$s1",word)) return 17;
+	if(strcmp("$s2",word)) return 18;
+	if(strcmp("$s3",word)) return 19;
+	if(strcmp("$s4",word)) return 20;
+	if(strcmp("$s5",word)) return 21;
+	if(strcmp("$s6",word)) return 22;
+	if(strcmp("$s7",word)) return 23;
+	if(strcmp("$t8",word)) return 24;
+	if(strcmp("$t9",word)) return 25;
+	if(strcmp("$k0",word)) return 26;
+	if(strcmp("$k1",word)) return 27;
+	if(strcmp("$gp",word)) return 28;
+	if(strcmp("$sp",word)) return 29;
+	if(strcmp("$fp",word)) return 30;
+	if(strcmp("$ra",word)) return 31;
+	return 0;
+}
 
 /************************************************************/
 /* Initialize Memory                                                                                                    */ 
