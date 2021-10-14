@@ -293,7 +293,7 @@ void load_program() {
 	/* Read in the program. */
 	word = 0;
 	i = 0;
-	while( fscanf(fp, "%[^\n]s\n", indata) != EOF ) {
+	while( fscanf(fp, "%s\n", indata) != EOF ) {
 		printf("read in string: %s\n",indata);
 		temp = strtok (indata," ,.-");
 		bin = find_mips(temp);
@@ -591,6 +591,79 @@ void print_instruction(uint32_t addr){
 	/*IMPLEMENT THIS*/
 }
 
+/************************************************************/
+/* Bubble Sort Algorithm   */
+/************************************************************/
+//You have an array that contains 10 integers, A = {5,3,6,8,9,1,4,7,2,10}.
+//Use bubble sort algorithm to sort it in ascending order. In your MIPS program,
+//to sort them out.
+void swap(int *xp, int *yp)
+{
+    int temp = *xp;
+    *xp = *yp;
+    *yp = temp;
+}
+void bubble_sort(int A[], int n)
+{
+    //store these values into the data segment of the memory
+    uint32_t addr;
+    for (int y = 0; y < PROGRAM_SIZE; y++)
+    {
+        addr = MEM_TEXT_BEGIN + (y * 4);
+        addr = A[y];
+    }
+
+    for (int i = 0; i < n - 1; i++)
+    {
+        for (int j = 0; j < n - i - 1; j++)
+        {
+            if (A[j] > A[j + 1])
+            {
+                //print sorted values
+                swap(&A[j], &A[j + 1]);
+            }
+        }
+    }
+}
+void printArray(int A[], int size)
+{
+    int i;
+    printf("Bubble Sorted: \n");
+    for (i = 0; i < size; i++)
+    {
+        printf("%d ", A[i]);
+        printf("\n");
+    }
+}
+// end bubble sort algorithm
+
+/************************************************************/
+/* MIPS Fibonacci number of a given value   */
+/************************************************************/
+void fibonacci_number()
+{
+    int i;
+    int n = 10;
+
+    // initialize first and second terms
+    int t1 = 0, t2 = 1;
+
+    // initialize the next term (3rd term)
+    int nextTerm = t1 + t2;
+
+    // print the first two terms t1 and t2
+    printf("Fibonacci Series: %d, %d, ", t1, t2);
+
+    // print 3rd to nth terms
+    for (i = 3; i <= n; ++i) {
+        printf("%d, ", nextTerm);
+        t1 = t2;
+        t2 = nextTerm;
+        nextTerm = t1 + t2;
+    }
+
+}
+
 /***************************************************************/
 /* main                                                                                                                                   */
 /***************************************************************/
@@ -606,6 +679,16 @@ int main(int argc, char *argv[]) {
 
 	strcpy(prog_file, argv[1]);
 	initialize();
+
+	int A[] = {5, 3, 6, 8, 9, 1, 4, 7, 2, 10};
+    int n = sizeof(A) / sizeof(A[0]);
+    bubble_sort(A, n);
+    printArray(A, n);
+
+    printf("\n");
+    fibonacci_number();
+    printf("\n\n");
+
 	load_program();
 	help();
 	while (1){
