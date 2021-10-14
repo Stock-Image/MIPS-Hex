@@ -277,9 +277,11 @@ void init_memory() {
 /**************************************************************/
 void load_program() {                   
 	FILE * fp;
-	char indata[10];
+	char indata[100];
+	char* temp;
 	int i,j,word;
 	uint32_t address;
+	uint32_t bin;
 
 	/* Open program file. */
 	fp = fopen(prog_file, "r");
@@ -289,14 +291,23 @@ void load_program() {
 	}
 
 	/* Read in the program. */
+	word = 0;
 	i = 0;
-	j = 0;
-	while( fscanf(fp, "%s\n", indata) != EOF ) {
-			address = MEM_TEXT_BEGIN + i;
-			mem_write_32(address, word);
+	while( fscanf(fp, "%[^\n]s\n", indata) != EOF ) {
+		printf("read in string: %s\n",indata);
+		temp = strtok (indata," ,.-");
+		bin = find_mips(temp);
+		printf("writing 0x%08x\n",bin);
+		while(temp != NULL)
+		{
+			printf("read in string: %s\n",temp);
+			temp = strtok (NULL, " ,.-");
+		}
+		for(int k=0; k < 10; k++) indata[k] = 0;	//reset the array
+		address = MEM_TEXT_BEGIN + i;
+		mem_write_32(address, word);
 //		printf("writing 0x%08x into address 0x%08x (%d)\n", word, address, address);
 		i += 4;
-		for(int k=0; k < j; k++) indata[k] = 0;	//reset the array
 	}
 	PROGRAM_SIZE = i/4;
 	printf("Program loaded into memory.\n%d words written into memory.\n\n", PROGRAM_SIZE);
@@ -328,185 +339,185 @@ uint32_t find_mips(char* word)
 	for(int i=0; i < strlen(word); i++) word[i] = tolower(word[i]);
 	if(strcmp("add",word) == 0)
 	{
-		inst = (inst >> 26) & 0b000000;
-		inst = (inst << 5) & 0b100000;
+		printf("adding\n");
+		inst = (inst << 26) | 0b100000;
+		inst = (inst << 5) | 0b100000;
 	}
 	if(strcmp("addu",word) == 0)
 	{
-		inst = (inst >> 26) & 0b000000;
-		inst = (inst << 5) & 0b100001;
+		inst = 0x21;
 	}
 	if(strcmp("addi",word) == 0)
 	{
-		inst = (inst >> 26) & 0b001000;
+		inst = 0x20000000;
 	}
 	if(strcmp("addiu",word) == 0)
 	{
-		inst = (inst >> 26) & 0b001001;
+		inst = 0x24000000;
 	}
 	if(strcmp("sub",word) == 0)
 	{
-		inst = (inst >> 26) & 0b000000;
-		inst = (inst << 5) & 0b100010;
+		inst = (inst << 26) | 0b000000;
+		inst = (inst << 5) | 0b100010;
 	}
 	if(strcmp("subu",word) == 0)
 	{
-		inst = (inst >> 26) & 0b000000;
-		inst = (inst << 5) & 0b100011;
+		inst = (inst << 26) | 0b000000;
+		inst = (inst << 5) | 0b100011;
 	}
 	if(strcmp("mult",word) == 0)
 	{
-		inst = (inst >> 26) & 0b000000;
-		inst = (inst << 5) & 0b010010;
+		inst = (inst << 26) | 0b000000;
+		inst = (inst << 5) | 0b010010;
 	}
 	if(strcmp("multu",word) == 0)
 	{
-		inst = (inst >> 26) & 0b000000;
-		inst = (inst << 5) & 0b010011;
+		inst = (inst << 26) | 0b000000;
+		inst = (inst << 5) | 0b010011;
 	}
 	if(strcmp("div",word) == 0)
 	{
-		inst = (inst >> 26) & 0b000000;
-		inst = (inst << 5) & 0b011010;
+		inst = (inst << 26) | 0b000000;
+		inst = (inst << 5) | 0b011010;
 	}
 	if(strcmp("divu",word) == 0)
 	{
-		inst = (inst >> 26) & 0b000000;
-		inst = (inst << 5) & 0b011011;
+		inst = (inst << 26) | 0b000000;
+		inst = (inst << 5) | 0b011011;
 	}
 	if(strcmp("and",word) == 0)
 	{
-		inst = (inst >> 26) & 0b000000;
-		inst = (inst << 5) & 0b100100;
+		inst = (inst << 26) | 0b000000;
+		inst = (inst << 5) | 0b100100;
 	}
 	if(strcmp("andi",word) == 0)
 	{
-		inst = (inst >> 26) & 0b001100;
+		inst = (inst << 26) | 0b001100;
 	}
 	if(strcmp("or",word) == 0)
 	{
-		inst = (inst >> 26) & 0b000000;
-		inst = (inst << 5) & 0b100101;
+		inst = (inst << 26) | 0b000000;
+		inst = (inst << 5) | 0b100101;
 	}
 	if(strcmp("ori",word) == 0)
 	{
-		inst = (inst >> 26) & 0b001101;
+		inst = (inst << 26) | 0b001101;
 	}
 	if(strcmp("xor",word) == 0)
 	{
-		inst = (inst >> 26) & 0b000000;
-		inst = (inst << 5) & 0b100110;
+		inst = (inst << 26) | 0b000000;
+		inst = (inst << 5) | 0b100110;
 	}
 	if(strcmp("xori",word) == 0)
 	{
-		inst = (inst >> 26) & 0b001110;
+		inst = (inst << 26) | 0b001110;
 	}
 	if(strcmp("nor",word) == 0)
 	{
-		inst = (inst >> 26) & 0b000000;
-		inst = (inst << 5) & 0b100111;
+		inst = (inst << 26) | 0b000000;
+		inst = (inst << 5) | 0b100111;
 	}
 	if(strcmp("slt",word) == 0)
 	{
-		inst = (inst >> 26) & 0b000000;
-		inst =(inst << 5) & 0b101010;
+		inst = (inst << 26) | 0b000000;
+		inst =(inst << 5) | 0b101010;
 	}
 	if(strcmp("slti",word) == 0)
 	{
-		inst = (inst >> 26) & 0b001010;
+		inst = (inst << 26) | 0b001010;
 	}
 	if(strcmp("sll",word) == 0)
 	{
-		inst = (inst >> 26) & 0b000000;
-		inst = (inst << 5) & 0b000000;
+		inst = (inst << 26) | 0b000000;
+		inst = (inst << 5) | 0b000000;
 	}
 	if(strcmp("srl",word) == 0)
 	{
-		inst = (inst >> 26) & 0b000000;
-		inst = (inst << 5) & 0b000010;
+		inst = (inst << 26) | 0b000000;
+		inst = (inst << 5) | 0b000010;
 	}
 	if(strcmp("sra",word) == 0)
 	{
-		inst = (inst << 5) & 0b000011;
+		inst = (inst << 5) | 0b000011;
 	}
 	if(strcmp("lw",word) == 0)
 	{
-		inst = (inst >> 26) & 0b100011;
+		inst = (inst << 26) | 0b100011;
 	}
 	if(strcmp("lb",word) == 0)
 	{
-		inst = (inst >> 26) & 0b100000;
+		inst = (inst << 26) | 0b100000;
 	}
 	if(strcmp("lh",word) == 0)
 	{
-		inst = (inst >> 26) & 0b100001;
+		inst = (inst << 26) | 0b100001;
 	}
 	if(strcmp("lui",word) == 0)
 	{
-		inst = (inst >> 26) & 0b001111;
+		inst = (inst << 26) | 0b001111;
 	}
 	if(strcmp("sw",word) == 0)
 	{
-		inst = (inst >> 26) & 0b101011;
+		inst = (inst << 26) | 0b101011;
 	}
 	if(strcmp("sb",word) == 0)
 	{
-		inst = (inst >> 26) & 0b101000;
+		inst = (inst << 26) | 0b101000;
 	}
 	if(strcmp("sh",word) == 0)
 	{
-		inst = (inst >> 26) & 0b101001;
+		inst = (inst << 26) | 0b101001;
 	}
 	if(strcmp("mfhi",word) == 0)
 	{
-		inst = (inst >> 26) & 0b000000;
-		inst = (inst << 5) & 0b001010;
+		inst = (inst << 26) | 0b000000;
+		inst = (inst << 5) | 0b001010;
 	}
 	if(strcmp("mflo",word) == 0)
 	{
-		inst = (inst >> 26) & 0b000000;
-		inst = (inst << 5) & 0b001100;
+		inst = (inst << 26) | 0b000000;
+		inst = (inst << 5) | 0b001100;
 	}
 	if(strcmp("mthi",word) == 0)
 	{
-		inst = (inst >> 26) & 0b000000;
-		inst = (inst << 5) & 0b010001;
+		inst = (inst << 26) | 0b000000;
+		inst = (inst << 5) | 0b010001;
 	}
 	if(strcmp("mtlo",word) == 0)
 	{
-		inst = (inst >> 26) & 0b000000;
-		inst = (inst << 5) & 0b010011;
+		inst = (inst << 26) | 0b000000;
+		inst = (inst << 5) | 0b010011;
 	}
 	if(strcmp("beq",word) == 0)
 	{
-		inst = (inst >> 26) & 0b000100;
+		inst = (inst << 26) | 0b000100;
 	}
 	if(strcmp("bne",word) == 0)
 	{
-		inst = (inst >> 26) & 0b000101;
+		inst = (inst << 26) | 0b000101;
 	}
 	if(strcmp("blez",word) == 0)
 	{
-		inst = (inst >> 26) & 0b000110;
+		inst = (inst << 26) | 0b000110;
 	}
 	if(strcmp("bltz",word) == 0);
 	if(strcmp("bgez",word) == 0);
 	if(strcmp("bgtz",word) == 0)
 	{
-		inst = (inst >> 26) & 0b000111;
+		inst = (inst << 26) | 0b000111;
 	}
 	if(strcmp("j",word) == 0)
 	{
-		inst = (inst >> 26) & 0b10;
+		inst = (inst << 26) | 0b10;
 	}
 	if(strcmp("jr",word) == 0)
 	{
-		inst = (inst >> 26) & 0b000000;
-		inst = (inst << 5) & 0b001000;
+		inst = (inst << 26) | 0b000000;
+		inst = (inst << 5) | 0b001000;
 	}
 	if(strcmp("jal",word) == 0)
 	{
-		inst = (inst >> 26) & 0b000011;
+		inst = (inst << 26) | 0b000011;
 	}
 	if(strcmp("jalr",word) == 0);
 	return inst;
