@@ -384,142 +384,142 @@ uint32_t find_mips(char* word)
 	}
 	if(strcmp("divu",word) == 0)
 	{
-		inst = (inst << 26) | 0b000000;
-		inst = (inst << 5) | 0b011011;
+		inst |= (0b000000 << 26);
+		inst |= (0b011011 << 5);
 	}
 	if(strcmp("and",word) == 0)
 	{
-		inst = (inst << 26) | 0b000000;
-		inst = (inst << 5) | 0b100100;
+		inst |= (0b000000 << 26);
+		inst |= (0b011000 << 5);
 	}
 	if(strcmp("andi",word) == 0)
 	{
-		inst = (inst << 26) | 0b001100;
+		inst |= (0b001101 << 26);
 	}
 	if(strcmp("or",word) == 0)
 	{
-		inst = (inst << 26) | 0b000000;
-		inst = (inst << 5) | 0b100101;
+		inst |= (0b000000 << 26);
+		inst |= (0b011001 << 5);
 	}
 	if(strcmp("ori",word) == 0)
 	{
-		inst = (inst << 26) | 0b001101;
+		inst |= (0b001101 << 26);
 	}
 	if(strcmp("xor",word) == 0)
 	{
-		inst = (inst << 26) | 0b000000;
-		inst = (inst << 5) | 0b100110;
+		inst |= (0b000000 << 26);
+		inst |= (0b100110 << 5);
 	}
 	if(strcmp("xori",word) == 0)
 	{
-		inst = (inst << 26) | 0b001110;
+		inst |= (0b001110 << 5);
 	}
 	if(strcmp("nor",word) == 0)
 	{
-		inst = (inst << 26) | 0b000000;
-		inst = (inst << 5) | 0b100111;
+		inst |= (0b000000 << 26);
+		inst |= (0b100111 << 5);
 	}
 	if(strcmp("slt",word) == 0)
 	{
-		inst = (inst << 26) | 0b000000;
-		inst =(inst << 5) | 0b101010;
+		inst |= (0b000000 << 26);
+		inst |= (0b101010 << 5);
 	}
 	if(strcmp("slti",word) == 0)
 	{
-		inst = (inst << 26) | 0b001010;
+		inst |= (0b001010 << 5);
 	}
 	if(strcmp("sll",word) == 0)
 	{
-		inst = (inst << 26) | 0b000000;
-		inst = (inst << 5) | 0b000000;
+		inst |= (0b000000 << 26);
+		inst |= (0b000000 << 5);
 	}
 	if(strcmp("srl",word) == 0)
 	{
-		inst = (inst << 26) | 0b000000;
-		inst = (inst << 5) | 0b000010;
+		inst |= (0b000000 << 26);
+		inst |= (0b000010 << 5);
 	}
 	if(strcmp("sra",word) == 0)
 	{
-		inst = (inst << 5) | 0b000011;
+		inst |= (0b000011 << 26);
 	}
 	if(strcmp("lw",word) == 0)
 	{
-		inst = (inst << 26) | 0b100011;
+		inst |= (0b100011 << 26);
 	}
 	if(strcmp("lb",word) == 0)
 	{
-		inst = (inst << 26) | 0b100000;
+		inst |= (0b100000 << 26);
 	}
 	if(strcmp("lh",word) == 0)
 	{
-		inst = (inst << 26) | 0b100001;
+		inst |= (0b100001 << 26);
 	}
 	if(strcmp("lui",word) == 0)
 	{
-		inst = (inst << 26) | 0b001111;
+		inst |= (0b001111 << 26);
 	}
 	if(strcmp("sw",word) == 0)
 	{
-		inst = (inst << 26) | 0b101011;
+		inst |= (0b101011 << 26);
 	}
 	if(strcmp("sb",word) == 0)
 	{
-		inst = (inst << 26) | 0b101000;
+		inst |= (0b101000 << 26);
 	}
 	if(strcmp("sh",word) == 0)
 	{
-		inst = (inst << 26) | 0b101001;
+		inst |= (0b101001 << 26);
 	}
 	if(strcmp("mfhi",word) == 0)
 	{
-		inst = (inst << 26) | 0b000000;
-		inst = (inst << 5) | 0b001010;
+		inst |= (0b000000 << 26);
+		inst |= (0b001010 << 5);
 	}
 	if(strcmp("mflo",word) == 0)
 	{
-		inst = (inst << 26) | 0b000000;
-		inst = (inst << 5) | 0b001100;
+		inst |= (0b000000 << 26);
+		inst |= (0b001100 << 5);
 	}
 	if(strcmp("mthi",word) == 0)
 	{
-		inst = (inst << 26) | 0b000000;
-		inst = (inst << 5) | 0b010001;
+		inst |= (0b000000 << 26);
+		inst |= (0b100001 << 5);
 	}
 	if(strcmp("mtlo",word) == 0)
 	{
-		inst = (inst << 26) | 0b000000;
-		inst = (inst << 5) | 0b010011;
+		inst |= (0b000000 << 26);
+		inst |= (0b010011 << 5);
 	}
 	if(strcmp("beq",word) == 0)
 	{
-		inst = (inst << 26) | 0b000100;
+		inst |= (0b000100 << 26);
 	}
 	if(strcmp("bne",word) == 0)
 	{
-		inst = (inst << 26) | 0b000101;
+		inst |= (0b000101 << 26);
 	}
 	if(strcmp("blez",word) == 0)
 	{
-		inst = (inst << 26) | 0b000110;
+		inst |= (0b000110 << 26);
 	}
 	if(strcmp("bltz",word) == 0);
 	if(strcmp("bgez",word) == 0);
 	if(strcmp("bgtz",word) == 0)
 	{
-		inst = (inst << 26) | 0b000111;
+		inst |= (0b000111 << 26);
 	}
 	if(strcmp("j",word) == 0)
 	{
-		inst = (inst << 26) | 0b10;
+		inst |= (0b000010 << 26);
 	}
 	if(strcmp("jr",word) == 0)
 	{
-		inst = (inst << 26) | 0b000000;
-		inst = (inst << 5) | 0b001000;
+		inst |= (0b000000 << 26);
+		inst |= (0b001000 << 5);
 	}
 	if(strcmp("jal",word) == 0)
 	{
-		inst = (inst << 26) | 0b000011;
+		inst |= (0b000011 << 26);
 	}
 	if(strcmp("jalr",word) == 0);
 	return inst;
