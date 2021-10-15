@@ -294,11 +294,27 @@ void load_program() {
 	/* Read in the program. */
 	word = 0;
 	i = 0;
-	while( fscanf(fp, "%s,%s,%s,%s\n", indata) != EOF ) {
+	//uint32_t instruction=0;
+	//uint32_t 
+
+	uint32_t result=0;
+	while(fgets(indata,sizeof(indata),fp)) {
 		//printf("read in string: %s\n",indata);
-		temp = strtok (indata," ,.-");
+		//temp = strtok (indata," ,.-");
+		//char * ptr = strtok(indata,",");
+
 		printf("%s\n",indata);
-		bin = find_mips(temp);
+
+		/*if (indata[0]==)
+		{
+			opCode = find_mips(indata);
+		}
+		ptr = strtok(NULL,", ");
+		printf("%s\n",ptr);
+
+
+		ptr = strtok(NULL,", ");
+		printf("%s\n",ptr);*/
 
 		
 		
@@ -306,8 +322,8 @@ void load_program() {
 	
 		
 	}
-	PROGRAM_SIZE = i/4;
-	printf("Program loaded into memory.\n%d words written into memory.\n\n", PROGRAM_SIZE);
+
+	
 	fclose(fp);
 }
 
@@ -335,13 +351,20 @@ uint32_t find_mips(char* word)
 	
 	for(int i=0; i < strlen(word); i++) word[i] = tolower(word[i]);
 	uint32_t inst = 0;
-	//printf("%s\n\n",word);
+	uint32_t result=0; 
+	uint32_t rs, rt, rd, shamt, funct, immediate, address;
 
+
+	
 	if(strcmp("add",word) == 0)
 	{
 		inst |= (0b000000 << 26);
 		inst |= (0b100000 << 5);
-		printf("%d",inst);
+		// need the bits for RS , RT ,RD , SHAMT, FUNCT
+		rs = find_reg("$zero");
+
+
+		result = R_type(rs,rt,rd,shamt,inst);
 
 	}
 	if(strcmp("addu",word) == 0)
@@ -352,11 +375,14 @@ uint32_t find_mips(char* word)
 	if(strcmp("addi",word) == 0)
 	{
 		inst |= (0b001000 << 5);
+		
 	}
 	if(strcmp("addiu",word) == 0)
 	{
-		uint32_t opCode = 0x9;
+		
 		inst |= (0b001001 << 5);
+		//find_reg()
+		I_type(inst,rs,rt,immediate);
 
 	}
 	if(strcmp("sub",word) == 0)

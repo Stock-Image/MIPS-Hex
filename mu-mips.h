@@ -79,3 +79,7 @@ void initialize();
 void print_program(); /*IMPLEMENT THIS*/
 void print_instruction(uint32_t);
 uint32_t find_mips(char* word);
+uint32_t R_type(uint32_t rs, uint32_t rt, uint32_t rd, uint32_t shamt, uint32_t funct );
+uint32_t I_type(uint32_t opCode, uint32_t rs, uint32_t rt, uint32_t immediate);
+uint32_t J_type(uint32_t opCode, uint32_t address);
+uint32_t find_reg(char* word);
