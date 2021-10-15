@@ -10,6 +10,7 @@
 /***************************************************************/
 /* Print out a list of commands available                                                                  */
 /***************************************************************/
+
 void help() {        
 	printf("------------------------------------------------------------------\n\n");
 	printf("\t**********MU-MIPS Help MENU**********\n\n");
@@ -293,22 +294,17 @@ void load_program() {
 	/* Read in the program. */
 	word = 0;
 	i = 0;
-	while( fscanf(fp, "%[^\n]s\n", indata) != EOF ) {
-		printf("read in string: %s\n",indata);
+	while( fscanf(fp, "%s,%s,%s,%s\n", indata) != EOF ) {
+		//printf("read in string: %s\n",indata);
 		temp = strtok (indata," ,.-");
+		printf("%s\n",indata);
 		bin = find_mips(temp);
-		printf("writing 0x%08x\n",bin);
-		while(temp != NULL)
-		{
-			printf("read in string: %s\n",temp);
-			temp = strtok (NULL, " ,.-");
-			find_reg
-		}
-		for(int k=0; k < 10; k++) indata[k] = 0;	//reset the array
-		address = MEM_TEXT_BEGIN + i;
-		mem_write_32(address, word);
-//		printf("writing 0x%08x into address 0x%08x (%d)\n", word, address, address);
-		i += 4;
+
+		
+		
+		//for(int k=0; k < 10; k++) indata[k] = 0;	//reset the array
+	
+		
 	}
 	PROGRAM_SIZE = i/4;
 	printf("Program loaded into memory.\n%d words written into memory.\n\n", PROGRAM_SIZE);
@@ -336,13 +332,17 @@ void handle_instruction()
  *Reads in the mips functions*/
 uint32_t find_mips(char* word)
 {
-	uint32_t inst = 0;
+	
 	for(int i=0; i < strlen(word); i++) word[i] = tolower(word[i]);
+	uint32_t inst = 0;
+	//printf("%s\n\n",word);
+
 	if(strcmp("add",word) == 0)
 	{
 		inst |= (0b000000 << 26);
 		inst |= (0b100000 << 5);
-		inst = R_type(inst);
+		printf("%d",inst);
+
 	}
 	if(strcmp("addu",word) == 0)
 	{
@@ -355,7 +355,9 @@ uint32_t find_mips(char* word)
 	}
 	if(strcmp("addiu",word) == 0)
 	{
+		uint32_t opCode = 0x9;
 		inst |= (0b001001 << 5);
+
 	}
 	if(strcmp("sub",word) == 0)
 	{
@@ -562,17 +564,30 @@ uint32_t find_reg(char* word)
 	return 0;
 }
 
-uint32_t R_type()
+uint32_t R_type(uint32_t rs, uint32_t rt, uint32_t rd, uint32_t shamt, uint32_t funct )
 {
+	uint32_t result=0;
+
+	result = rs | rt | rd | shamt | funct;
+
+	return result;
+}
+uint32_t I_type(uint32_t opCode, uint32_t rs, uint32_t rt, uint32_t immediate)
+{
+	uint32_t result=0;
+
+	result = opCode | rs | rt | immediate;
+
+	return result;
 
 }
-uint32_t I_type()
+uint32_t J_type(uint32_t opCode, uint32_t address)
 {
+	uint32_t result=0;
 
-}
-uint32_t J_type()
-{
+	result = opCode | address;
 
+	return result;
 }
 uint32_t FR_type()
 {
@@ -636,3 +651,5 @@ int main(int argc, char *argv[]) {
 	}
 	return 0;
 }
+
+
