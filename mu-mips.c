@@ -293,7 +293,7 @@ void load_program() {
 	/* Read in the program. */
 	word = 0;
 	i = 0;
-	while( fscanf(fp, "%[^\n]s\n", indata) != EOF ) {
+	while( fscanf(fp, "%s\n", indata) != EOF ) {
 		printf("read in string: %s\n",indata);
 		temp = strtok (indata," ,.-");
 		bin = find_mips(temp);
@@ -302,7 +302,6 @@ void load_program() {
 		{
 			printf("read in string: %s\n",temp);
 			temp = strtok (NULL, " ,.-");
-			find_reg
 		}
 		for(int k=0; k < 10; k++) indata[k] = 0;	//reset the array
 		address = MEM_TEXT_BEGIN + i;
@@ -340,186 +339,185 @@ uint32_t find_mips(char* word)
 	for(int i=0; i < strlen(word); i++) word[i] = tolower(word[i]);
 	if(strcmp("add",word) == 0)
 	{
-		inst |= (0b000000 << 26);
-		inst |= (0b100000 << 5);
-		inst = R_type(inst);
+		printf("adding\n");
+		inst = (inst << 26) | 0b100000;
+		inst = (inst << 5) | 0b100000;
 	}
 	if(strcmp("addu",word) == 0)
 	{
-		inst |= (0b000000 << 26);
-		inst |= (0b010101 << 5);
+		inst = 0x21;
 	}
 	if(strcmp("addi",word) == 0)
 	{
-		inst |= (0b001000 << 5);
+		inst = 0x20000000;
 	}
 	if(strcmp("addiu",word) == 0)
 	{
-		inst |= (0b001001 << 5);
+		inst = 0x24000000;
 	}
 	if(strcmp("sub",word) == 0)
 	{
-		inst |= (0b000000 << 26);
-		inst |= (0b010110 << 5);
+		inst = (inst << 26) | 0b000000;
+		inst = (inst << 5) | 0b100010;
 	}
 	if(strcmp("subu",word) == 0)
 	{
-		inst |= (0b000000 << 26);
-		inst |= (0b010111 << 5);
+		inst = (inst << 26) | 0b000000;
+		inst = (inst << 5) | 0b100011;
 	}
 	if(strcmp("mult",word) == 0)
 	{
-		inst |= (0b000000 << 5);
-		inst |= (0b010010 << 5);
+		inst = (inst << 26) | 0b000000;
+		inst = (inst << 5) | 0b010010;
 	}
 	if(strcmp("multu",word) == 0)
 	{
-		inst |= (0b000000 << 26);
-		inst |= (0b010011 << 5);
+		inst = (inst << 26) | 0b000000;
+		inst = (inst << 5) | 0b010011;
 	}
 	if(strcmp("div",word) == 0)
 	{
-		inst |= (0b000000 << 26);
-		inst |= (0b011010 << 5);
+		inst = (inst << 26) | 0b000000;
+		inst = (inst << 5) | 0b011010;
 	}
 	if(strcmp("divu",word) == 0)
 	{
-		inst |= (0b000000 << 26);
-		inst |= (0b011011 << 5);
+		inst = (inst << 26) | 0b000000;
+		inst = (inst << 5) | 0b011011;
 	}
 	if(strcmp("and",word) == 0)
 	{
-		inst |= (0b000000 << 26);
-		inst |= (0b011000 << 5);
+		inst = (inst << 26) | 0b000000;
+		inst = (inst << 5) | 0b100100;
 	}
 	if(strcmp("andi",word) == 0)
 	{
-		inst |= (0b001101 << 26);
+		inst = (inst << 26) | 0b001100;
 	}
 	if(strcmp("or",word) == 0)
 	{
-		inst |= (0b000000 << 26);
-		inst |= (0b011001 << 5);
+		inst = (inst << 26) | 0b000000;
+		inst = (inst << 5) | 0b100101;
 	}
 	if(strcmp("ori",word) == 0)
 	{
-		inst |= (0b001101 << 26);
+		inst = (inst << 26) | 0b001101;
 	}
 	if(strcmp("xor",word) == 0)
 	{
-		inst |= (0b000000 << 26);
-		inst |= (0b100110 << 5);
+		inst = (inst << 26) | 0b000000;
+		inst = (inst << 5) | 0b100110;
 	}
 	if(strcmp("xori",word) == 0)
 	{
-		inst |= (0b001110 << 5);
+		inst = (inst << 26) | 0b001110;
 	}
 	if(strcmp("nor",word) == 0)
 	{
-		inst |= (0b000000 << 26);
-		inst |= (0b100111 << 5);
+		inst = (inst << 26) | 0b000000;
+		inst = (inst << 5) | 0b100111;
 	}
 	if(strcmp("slt",word) == 0)
 	{
-		inst |= (0b000000 << 26);
-		inst |= (0b101010 << 5);
+		inst = (inst << 26) | 0b000000;
+		inst =(inst << 5) | 0b101010;
 	}
 	if(strcmp("slti",word) == 0)
 	{
-		inst |= (0b001010 << 5);
+		inst = (inst << 26) | 0b001010;
 	}
 	if(strcmp("sll",word) == 0)
 	{
-		inst |= (0b000000 << 26);
-		inst |= (0b000000 << 5);
+		inst = (inst << 26) | 0b000000;
+		inst = (inst << 5) | 0b000000;
 	}
 	if(strcmp("srl",word) == 0)
 	{
-		inst |= (0b000000 << 26);
-		inst |= (0b000010 << 5);
+		inst = (inst << 26) | 0b000000;
+		inst = (inst << 5) | 0b000010;
 	}
 	if(strcmp("sra",word) == 0)
 	{
-		inst |= (0b000011 << 26);
+		inst = (inst << 5) | 0b000011;
 	}
 	if(strcmp("lw",word) == 0)
 	{
-		inst |= (0b100011 << 26);
+		inst = (inst << 26) | 0b100011;
 	}
 	if(strcmp("lb",word) == 0)
 	{
-		inst |= (0b100000 << 26);
+		inst = (inst << 26) | 0b100000;
 	}
 	if(strcmp("lh",word) == 0)
 	{
-		inst |= (0b100001 << 26);
+		inst = (inst << 26) | 0b100001;
 	}
 	if(strcmp("lui",word) == 0)
 	{
-		inst |= (0b001111 << 26);
+		inst = (inst << 26) | 0b001111;
 	}
 	if(strcmp("sw",word) == 0)
 	{
-		inst |= (0b101011 << 26);
+		inst = (inst << 26) | 0b101011;
 	}
 	if(strcmp("sb",word) == 0)
 	{
-		inst |= (0b101000 << 26);
+		inst = (inst << 26) | 0b101000;
 	}
 	if(strcmp("sh",word) == 0)
 	{
-		inst |= (0b101001 << 26);
+		inst = (inst << 26) | 0b101001;
 	}
 	if(strcmp("mfhi",word) == 0)
 	{
-		inst |= (0b000000 << 26);
-		inst |= (0b001010 << 5);
+		inst = (inst << 26) | 0b000000;
+		inst = (inst << 5) | 0b001010;
 	}
 	if(strcmp("mflo",word) == 0)
 	{
-		inst |= (0b000000 << 26);
-		inst |= (0b001100 << 5);
+		inst = (inst << 26) | 0b000000;
+		inst = (inst << 5) | 0b001100;
 	}
 	if(strcmp("mthi",word) == 0)
 	{
-		inst |= (0b000000 << 26);
-		inst |= (0b100001 << 5);
+		inst = (inst << 26) | 0b000000;
+		inst = (inst << 5) | 0b010001;
 	}
 	if(strcmp("mtlo",word) == 0)
 	{
-		inst |= (0b000000 << 26);
-		inst |= (0b010011 << 5);
+		inst = (inst << 26) | 0b000000;
+		inst = (inst << 5) | 0b010011;
 	}
 	if(strcmp("beq",word) == 0)
 	{
-		inst |= (0b000100 << 26);
+		inst = (inst << 26) | 0b000100;
 	}
 	if(strcmp("bne",word) == 0)
 	{
-		inst |= (0b000101 << 26);
+		inst = (inst << 26) | 0b000101;
 	}
 	if(strcmp("blez",word) == 0)
 	{
-		inst |= (0b000110 << 26);
+		inst = (inst << 26) | 0b000110;
 	}
 	if(strcmp("bltz",word) == 0);
 	if(strcmp("bgez",word) == 0);
 	if(strcmp("bgtz",word) == 0)
 	{
-		inst |= (0b000111 << 26);
+		inst = (inst << 26) | 0b000111;
 	}
 	if(strcmp("j",word) == 0)
 	{
-		inst |= (0b000010 << 26);
+		inst = (inst << 26) | 0b10;
 	}
 	if(strcmp("jr",word) == 0)
 	{
-		inst |= (0b000000 << 26);
-		inst |= (0b001000 << 5);
+		inst = (inst << 26) | 0b000000;
+		inst = (inst << 5) | 0b001000;
 	}
 	if(strcmp("jal",word) == 0)
 	{
-		inst |= (0b000011 << 26);
+		inst = (inst << 26) | 0b000011;
 	}
 	if(strcmp("jalr",word) == 0);
 	return inst;
@@ -562,27 +560,6 @@ uint32_t find_reg(char* word)
 	return 0;
 }
 
-uint32_t R_type()
-{
-
-}
-uint32_t I_type()
-{
-
-}
-uint32_t J_type()
-{
-
-}
-uint32_t FR_type()
-{
-
-}
-uint32_t FI_type()
-{
-
-}
-
 /************************************************************/
 /* Initialize Memory                                                                                                    */ 
 /************************************************************/
@@ -610,8 +587,84 @@ void print_program(){
 /************************************************************/
 /* Print the instruction at given memory address (in MIPS assembly format)    */
 /************************************************************/
-void print_instruction(uint32_t addr){
+void print_instruction(uint32_t addr)
+{
 	/*IMPLEMENT THIS*/
+}
+
+/************************************************************/
+/* Bubble Sort Algorithm */
+/************************************************************/
+//You have an array that contains 10 integers, A = {5,3,6,8,9,1,4,7,2,10}.
+//Use bubble sort algorithm to sort it in ascending order. In your MIPS program,
+//to sort them out.
+void swap(int *xp, int *yp)
+{
+    int temp = *xp;
+    *xp = *yp;
+    *yp = temp;
+}
+
+void bubble_sort(int A[], int n)
+{
+    //store these values into the data segment of the memory
+    uint32_t addr;
+    for (int y = 0; y < PROGRAM_SIZE; y++)
+    {
+        addr = MEM_TEXT_BEGIN + (y * 4);
+        addr = A[y];
+    }
+
+    for (int i = 0; i < n - 1; i++)
+    {
+        for (int j = 0; j < n - i - 1; j++)
+        {
+            if (A[j] > A[j + 1])
+            {
+                //print sorted values
+                swap(&A[j], &A[j + 1]);
+            }
+        }
+    }
+}
+
+void printArray(int A[], int size)
+{
+    int i;
+    printf("Bubble Sorted: \n");
+    for (i = 0; i < size; i++)
+    {
+        printf("%d ", A[i]);
+        printf("\n");
+    }
+}
+
+// end bubble sort algorithm
+
+/************************************************************/
+/* MIPS Fibonacci number of a given value   */
+/************************************************************/
+void fibonacci_number()
+{
+    int i;
+    int n = 10;
+
+    // initialize first and second terms
+    int t1 = 0, t2 = 1;
+
+    // initialize the next term (3rd term)
+    int nextTerm = t1 + t2;
+
+    // print the first two terms t1 and t2
+    printf("Fibonacci Series: %d, %d, ", t1, t2);
+
+    // print 3rd to nth terms
+    for (i = 3; i <= n; ++i) {
+        printf("%d, ", nextTerm);
+        t1 = t2;
+        t2 = nextTerm;
+        nextTerm = t1 + t2;
+    }
 }
 
 /***************************************************************/
@@ -629,10 +682,23 @@ int main(int argc, char *argv[]) {
 
 	strcpy(prog_file, argv[1]);
 	initialize();
+
+	int A[] = {5, 3, 6, 8, 9, 1, 4, 7, 2, 10};
+    int n = sizeof(A) / sizeof(A[0]);
+    bubble_sort(A, n);
+    printArray(A, n);
+
+    printf("\n");
+    fibonacci_number();
+    printf("\n\n");
+
 	load_program();
 	help();
-	while (1){
+	
+	while (1)
+	{
 		handle_command();
 	}
+
 	return 0;
 }
