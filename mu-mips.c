@@ -382,7 +382,7 @@ uint32_t find_mips(char* word)
 		
 		inst |= (0b001001 << 5);
 		//find_reg()
-		I_type(inst,rs,rt,immediate);
+		result = I_type(inst,rs,rt,immediate);
 
 	}
 	if(strcmp("sub",word) == 0)
@@ -550,7 +550,9 @@ uint32_t find_mips(char* word)
 		inst |= (0b000011 << 26);
 	}
 	if(strcmp("jalr",word) == 0);
-	return inst;
+
+
+	return result;
 }
 
 uint32_t find_reg(char* word)
