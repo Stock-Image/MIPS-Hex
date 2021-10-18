@@ -294,28 +294,11 @@ void load_program() {
 	/* Read in the program. */
 	word = 0;
 	i = 0;
-	//uint32_t instruction=0;
-	//uint32_t 
-
-	uint32_t result=0;
-	while(fgets(indata,sizeof(indata),fp)) {
-		//printf("read in string: %s\n",indata);
-		//temp = strtok (indata," ,.-");
-		//char * ptr = strtok(indata,",");
-		find_mips(indata);
+	while( fscanf(fp, "%s,%s,%s,%s\n", indata) != EOF ) {
+		printf("read in string: %s\n",indata);
+		temp = strtok (indata," ,.-");
 		printf("%s\n",indata);
-		
-
-		/*if (indata[0]==)
-		{
-			opCode = find_mips(indata);
-		}
-		ptr = strtok(NULL,", ");
-		printf("%s\n",ptr);
-
-
-		ptr = strtok(NULL,", ");
-		printf("%s\n",ptr);*/
+		bin = find_mips(temp);
 
 		
 		
@@ -323,8 +306,8 @@ void load_program() {
 	
 		
 	}
-
-	
+	PROGRAM_SIZE = i/4;
+	printf("Program loaded into memory.\n%d words written into memory.\n\n", PROGRAM_SIZE);
 	fclose(fp);
 }
 
@@ -350,136 +333,66 @@ void handle_instruction()
 uint32_t find_mips(char* word)
 {
 	
-	//for(int i=0; i < strlen(word); i++) word[i] = tolower(word[i]);
+	for(int i=0; i < strlen(word); i++) word[i] = tolower(word[i]);
 	uint32_t inst = 0;
-	uint32_t result=0; 
-	uint32_t rs, rt, rd, shamt, funct, immediate, address;
-	
+	//printf("%s\n\n",word);
 
-	
 	if(strcmp("add",word) == 0)
 	{
-		
-		inst = 0b100000;
-		rs = find_reg(word1);
-		rs = rs << 21;
-		rt = find_reg(word2);
-		rt = rt << 16;
-		rd = find_reg(word3);
-		rd = rd << 11;
-		result = R_type(rs,rt,rd,shamt,inst);
+		inst |= (0b000000 << 26);
+		inst |= (0b100000 << 5);
+		printf("%d",inst);
 
 	}
 	if(strcmp("addu",word) == 0)
 	{
-	
-		inst = 33;
-		rs = find_reg(word1);
-		rs = rs << 21;
-		rt = find_reg(word2);
-		rt = rt << 16;
-		rd = find_reg(word3);
-		rd = rd << 11;
-		result = R_type(rs,rt,rd,shamt,inst);
-
+		inst |= (0b000000 << 26);
+		inst |= (0b010101 << 5);
 	}
 	if(strcmp("addi",word) == 0)
 	{
-		inst = 8;
-		result = I_type(inst,rs,rt,immediate);
-		
+		inst |= (0b001000 << 5);
 	}
 	if(strcmp("addiu",word) == 0)
 	{
-		
-		inst = 0x09;
-		inst = inst << 26;
-		rs = find_reg("$a0");
-		rs = rs << 21;
-		rt = find_reg("$zero");
-		rt = rt << 16;
-		immediate = 0;
+		uint32_t opCode = 0x9;
+		inst |= (0b001001 << 5);
 
-		result = I_type(inst,rs,rt,immediate);
-		printf("%0x\n",result);
 	}
 	if(strcmp("sub",word) == 0)
 	{
-		inst = 34;
-		rs = find_reg(word1);
-		rs = rs << 21;
-		rt = find_reg(word2);
-		rt = rt << 16;
-		rd = find_reg(word3);
-		rd = rd << 11;
-		result = R_type(rs,rt,rd,shamt,inst);
-
+		inst |= (0b000000 << 26);
+		inst |= (0b010110 << 5);
 	}
 	if(strcmp("subu",word) == 0)
 	{
-		inst = 35;
-		rs = find_reg(word1);
-		rs = rs << 21;
-		rt = find_reg(word2);
-		rt = rt << 16;
-		rd = find_reg(word3);
-		rd = rd << 11;
-		result = R_type(rs,rt,rd,shamt,inst);
+		inst |= (0b000000 << 26);
+		inst |= (0b010111 << 5);
 	}
 	if(strcmp("mult",word) == 0)
 	{
-		inst = 24;
-		rs = find_reg(word1);
-		rs = rs << 21;
-		rt = find_reg(word2);
-		rt = rt << 16;
-		rd = find_reg(word3);
-		rd = rd << 11;
-		result = R_type(rs,rt,rd,shamt,inst);
+		inst |= (0b000000 << 5);
+		inst |= (0b010010 << 5);
 	}
 	if(strcmp("multu",word) == 0)
 	{
-		inst = 25;
-		rs = find_reg(word1);
-		rs = rs << 21;
-		rt = find_reg(word2);
-		rt = rt << 16;
-		rd = find_reg(word3);
-		rd = rd << 11;
-		result = R_type(rs,rt,rd,shamt,inst);
+		inst |= (0b000000 << 26);
+		inst |= (0b010011 << 5);
 	}
 	if(strcmp("div",word) == 0)
 	{
-		inst = 26;
-		rs = find_reg(word1);
-		rs = rs << 21;
-		rt = find_reg(word2);
-		rt = rt << 16;
-		rd = find_reg(word3);
-		rd = rd << 11;
-		result = R_type(rs,rt,rd,shamt,inst);
+		inst |= (0b000000 << 26);
+		inst |= (0b011010 << 5);
 	}
 	if(strcmp("divu",word) == 0)
 	{
-		inst = 27;
-		rs = find_reg(word1);
-		rs = rs << 21;
-		rt = find_reg(word2);
-		rt = rt << 16;
-		rd = find_reg(word3);
-		rd = rd << 11;
-		result = R_type(rs,rt,rd,shamt,inst);
+		inst |= (0b000000 << 26);
+		inst |= (0b011011 << 5);
 	}
 	if(strcmp("and",word) == 0)
 	{
-		inst = 36;
-		rs = find_reg(word1);
-		rs = rs << 21;
-		rt = find_reg(word2);
-		rt = rt << 16;
-		rd = find_reg(word3);
-		rd = rd << 11;
-		result = R_type(rs,rt,rd,shamt,inst);
+		inst |= (0b000000 << 26);
+		inst |= (0b011000 << 5);
 	}
 	if(strcmp("andi",word) == 0)
 	{
@@ -487,14 +400,8 @@ uint32_t find_mips(char* word)
 	}
 	if(strcmp("or",word) == 0)
 	{
-		inst = 37;
-		rs = find_reg(word1);
-		rs = rs << 21;
-		rt = find_reg(word2);
-		rt = rt << 16;
-		rd = find_reg(word3);
-		rd = rd << 11;
-		result = R_type(rs,rt,rd,shamt,inst);
+		inst |= (0b000000 << 26);
+		inst |= (0b011001 << 5);
 	}
 	if(strcmp("ori",word) == 0)
 	{
@@ -502,14 +409,8 @@ uint32_t find_mips(char* word)
 	}
 	if(strcmp("xor",word) == 0)
 	{
-		inst = 38;
-		rs = find_reg(word1);
-		rs = rs << 21;
-		rt = find_reg(word2);
-		rt = rt << 16;
-		rd = find_reg(word3);
-		rd = rd << 11;
-		result = R_type(rs,rt,rd,shamt,inst);
+		inst |= (0b000000 << 26);
+		inst |= (0b100110 << 5);
 	}
 	if(strcmp("xori",word) == 0)
 	{
@@ -517,25 +418,13 @@ uint32_t find_mips(char* word)
 	}
 	if(strcmp("nor",word) == 0)
 	{
-		inst = 39;
-		rs = find_reg(word1);
-		rs = rs << 21;
-		rt = find_reg(word2);
-		rt = rt << 16;
-		rd = find_reg(word3);
-		rd = rd << 11;
-		result = R_type(rs,rt,rd,shamt,inst);
+		inst |= (0b000000 << 26);
+		inst |= (0b100111 << 5);
 	}
 	if(strcmp("slt",word) == 0)
 	{
-		inst = 42;
-		rs = find_reg(word1);
-		rs = rs << 21;
-		rt = find_reg(word2);
-		rt = rt << 16;
-		rd = find_reg(word3);
-		rd = rd << 11;
-		result = R_type(rs,rt,rd,shamt,inst);
+		inst |= (0b000000 << 26);
+		inst |= (0b101010 << 5);
 	}
 	if(strcmp("slti",word) == 0)
 	{
@@ -545,23 +434,19 @@ uint32_t find_mips(char* word)
 	{
 		inst |= (0b000000 << 26);
 		inst |= (0b000000 << 5);
-		result = R_type(rs,rt,rd,shamt,inst);
 	}
 	if(strcmp("srl",word) == 0)
 	{
 		inst |= (0b000000 << 26);
 		inst |= (0b000010 << 5);
-		result = R_type(rs,rt,rd,shamt,inst);
 	}
 	if(strcmp("sra",word) == 0)
 	{
 		inst |= (0b000011 << 26);
-		result = R_type(rs,rt,rd,shamt,inst);
 	}
 	if(strcmp("lw",word) == 0)
 	{
 		inst |= (0b100011 << 26);
-		
 	}
 	if(strcmp("lb",word) == 0)
 	{
@@ -591,25 +476,21 @@ uint32_t find_mips(char* word)
 	{
 		inst |= (0b000000 << 26);
 		inst |= (0b001010 << 5);
-		result = R_type(rs,rt,rd,shamt,inst);
 	}
 	if(strcmp("mflo",word) == 0)
 	{
 		inst |= (0b000000 << 26);
 		inst |= (0b001100 << 5);
-		result = R_type(rs,rt,rd,shamt,inst);
 	}
 	if(strcmp("mthi",word) == 0)
 	{
 		inst |= (0b000000 << 26);
 		inst |= (0b100001 << 5);
-		result = R_type(rs,rt,rd,shamt,inst);
 	}
 	if(strcmp("mtlo",word) == 0)
 	{
 		inst |= (0b000000 << 26);
 		inst |= (0b010011 << 5);
-		result = R_type(rs,rt,rd,shamt,inst);
 	}
 	if(strcmp("beq",word) == 0)
 	{
@@ -643,46 +524,43 @@ uint32_t find_mips(char* word)
 		inst |= (0b000011 << 26);
 	}
 	if(strcmp("jalr",word) == 0);
-
-
-	return result;
+	return inst;
 }
 
 uint32_t find_reg(char* word)
 {
-	
-	if(strcmp("$zero",word)==0) return 0;
-	if(strcmp("$at",word)==0) return 1;
-	if(strcmp("$v0",word)==0) return 2;
-	if(strcmp("$v1",word)==0) return 3;
-	if(strcmp("$a0",word)==0) return 4;
-	if(strcmp("$a1",word)==0) return 5;
-	if(strcmp("$a2",word)==0) return 6;
-	if(strcmp("$a3",word)==0) return 7;
-	if(strcmp("$t0",word)==0) return 8;
-	if(strcmp("$t1",word)==0) return 9;
-	if(strcmp("$t2",word)==0) return 10;
-	if(strcmp("$t3",word)==0) return 11;
-	if(strcmp("$t4",word)==0) return 12;
-	if(strcmp("$t5",word)==0) return 13;
-	if(strcmp("$t6",word)==0) return 14;
-	if(strcmp("$t7",word)==0) return 15;
-	if(strcmp("$s0",word)==0) return 16;
-	if(strcmp("$s1",word)==0) return 17;
-	if(strcmp("$s2",word)==0) return 18;
-	if(strcmp("$s3",word)==0) return 19;
-	if(strcmp("$s4",word)==0) return 20;
-	if(strcmp("$s5",word)==0) return 21;
-	if(strcmp("$s6",word)==0) return 22;
-	if(strcmp("$s7",word)==0) return 23;
-	if(strcmp("$t8",word)==0) return 24;
-	if(strcmp("$t9",word)==0) return 25;
-	if(strcmp("$k0",word)==0) return 26;
-	if(strcmp("$k1",word)==0) return 27;
-	if(strcmp("$gp",word)==0) return 28;
-	if(strcmp("$sp",word)==0) return 29;
-	if(strcmp("$fp",word)==0) return 30;
-	if(strcmp("$ra",word)==0) return 31;
+	if(strcmp("$zero",word)) return 0;
+	if(strcmp("$at",word)) return 1;
+	if(strcmp("$v0",word)) return 2;
+	if(strcmp("$v1",word)) return 3;
+	if(strcmp("$a0",word)) return 4;
+	if(strcmp("$a1",word)) return 5;
+	if(strcmp("$a2",word)) return 6;
+	if(strcmp("$a3",word)) return 7;
+	if(strcmp("$t0",word)) return 8;
+	if(strcmp("$t1",word)) return 9;
+	if(strcmp("$t2",word)) return 10;
+	if(strcmp("$t3",word)) return 11;
+	if(strcmp("$t4",word)) return 12;
+	if(strcmp("$t5",word)) return 13;
+	if(strcmp("$t6",word)) return 14;
+	if(strcmp("$t7",word)) return 15;
+	if(strcmp("$s0",word)) return 16;
+	if(strcmp("$s1",word)) return 17;
+	if(strcmp("$s2",word)) return 18;
+	if(strcmp("$s3",word)) return 19;
+	if(strcmp("$s4",word)) return 20;
+	if(strcmp("$s5",word)) return 21;
+	if(strcmp("$s6",word)) return 22;
+	if(strcmp("$s7",word)) return 23;
+	if(strcmp("$t8",word)) return 24;
+	if(strcmp("$t9",word)) return 25;
+	if(strcmp("$k0",word)) return 26;
+	if(strcmp("$k1",word)) return 27;
+	if(strcmp("$gp",word)) return 28;
+	if(strcmp("$sp",word)) return 29;
+	if(strcmp("$fp",word)) return 30;
+	if(strcmp("$ra",word)) return 31;
 	return 0;
 }
 
@@ -711,14 +589,10 @@ uint32_t J_type(uint32_t opCode, uint32_t address)
 
 	return result;
 }
-uint32_t FR_type()
-{
+//uint32_t FR_type()
 
-}
-uint32_t FI_type()
-{
+//uint32_t FI_type()
 
-}
 
 /************************************************************/
 /* Initialize Memory                                                                                                    */ 
