@@ -504,8 +504,18 @@ uint32_t find_mips(char* word)
 	{
 		inst |= (0b000110 << 26);
 	}
-	if(strcmp("bltz",word) == 0);
-	if(strcmp("bgez",word) == 0);
+	if(strcmp("bltz",word) == 0)
+	{
+		//if $s < 0 advance_pc (offset << 2)); else advance_pc (4);
+		inst |= (0b000000 << 26);
+		inst |= (0b001000 << 5);
+	}
+	if(strcmp("bgez",word) == 0)
+	{
+		//Branch if the two's comp. integer in register s is >= 0
+		inst |= (0b000111 << 26);
+
+	}
 	if(strcmp("bgtz",word) == 0)
 	{
 		inst |= (0b000111 << 26);
@@ -523,7 +533,12 @@ uint32_t find_mips(char* word)
 	{
 		inst |= (0b000011 << 26);
 	}
-	if(strcmp("jalr",word) == 0);
+	if(strcmp("jalr",word) == 0)
+	{
+		//transfers control to the address in a specified register
+		inst |= (0b000000 << 26);
+		inst |= (0b001000 << 5);
+	}
 	return inst;
 }
 
